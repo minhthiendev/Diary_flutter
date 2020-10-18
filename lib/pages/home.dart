@@ -5,48 +5,47 @@ import '../components/diaryCard.dart';
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leading: FlatButton(
-            child: Icon(
-              Icons.menu,
-              color: Colors.white,
+    Map<String, String> arguments = ModalRoute.of(context).settings.arguments;
+    return Container(
+        child: Scaffold(
+            appBar: PreferredSize(
+              child: AppBar(
+                centerTitle: true,
+                leading: FlatButton(
+                  child: Icon(
+                    Icons.menu,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {},
+                ),
+                title: Image.asset(
+                  "assets/images/diary.png",
+                  width: 120,
+                  height: 120,
+                ),
+                backgroundColor: Hexcolor("#11274a"),
+                actions: [
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Icon(Icons.search)),
+                  Text(arguments['name'])
+                ],
+              ),
+              preferredSize: Size.fromHeight(70.0),
             ),
-            onPressed: () {},
-          ),
-          title: Text('My Diary', textAlign: TextAlign.center),
-          backgroundColor: Hexcolor("#11274a"),
-          actions: [Icon(Icons.search)],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          backgroundColor: Hexcolor("#11274a"),
-          onPressed: () {},
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-              DiaryCard(),
-            ],
-          ),
-        ));
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              backgroundColor: Hexcolor("#11274a"),
+              onPressed: () {
+                Navigator.pushNamed(context, '/AddDiary');
+              },
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  DiaryCard(),
+                ],
+              ),
+            )));
   }
 }

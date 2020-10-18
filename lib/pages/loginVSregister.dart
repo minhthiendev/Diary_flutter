@@ -6,7 +6,10 @@ class LoginVsRegsiter extends StatefulWidget {
   _LoginVsRegsiterState createState() => _LoginVsRegsiterState();
 }
 
+enum FormType { login, regsiter }
+
 class _LoginVsRegsiterState extends State<LoginVsRegsiter> {
+  String page = "login";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,24 +34,79 @@ class _LoginVsRegsiterState extends State<LoginVsRegsiter> {
       SizedBox(height: 40),
       logo(),
       TextFormField(
-        showCursor: true,
+        style: TextStyle(color: Colors.white),
+        cursorColor: Colors.white,
         decoration: InputDecoration(
+            hintText: "example@gmail.com",
             labelText: 'email',
             labelStyle: TextStyle(
                 color: Hexcolor("#6ea0f0"), decorationThickness: 0.2)),
       ),
       SizedBox(height: 10),
       TextFormField(
+        style: TextStyle(color: Colors.white),
+        obscureText: true,
+        cursorColor: Colors.white,
         decoration: InputDecoration(
+            hintText: "*************",
             labelText: 'password',
             labelStyle: TextStyle(
                 color: Hexcolor("#6ea0f0"), decorationThickness: 0.2)),
       ),
-      SizedBox(height: 60)
+      SizedBox(height: 30)
     ];
   }
 
   List<Widget> createButtons() {
+    if (page == "login")
+      return [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            RaisedButton(
+              color: Hexcolor("#11274a"),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(
+                    width: 1.2,
+                    color: Hexcolor("#6ea0f0"),
+                  )),
+              onPressed: () {
+                Navigator.pushNamed(context, '/Home',
+                    arguments: {'name': 'thien'});
+              },
+              child: Text(
+                'Login',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            RaisedButton(
+                color: Hexcolor("#11274a"),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(
+                      width: 1.2,
+                      color: Hexcolor("#6ea0f0"),
+                    )),
+                onPressed: () {},
+                child:
+                    Image.asset("assets/images/FB.png", width: 20, height: 20)),
+          ],
+        ),
+        FlatButton(
+          onPressed: () {
+            setState(() {
+              page = 'register';
+            });
+          },
+          child: Text(
+            'Create new account',
+            style: TextStyle(
+                decoration: TextDecoration.underline,
+                color: Hexcolor("#6ea0f0")),
+          ),
+        ),
+      ];
     return [
       RaisedButton(
         color: Hexcolor("#11274a"),
@@ -60,14 +118,18 @@ class _LoginVsRegsiterState extends State<LoginVsRegsiter> {
             )),
         onPressed: () {},
         child: Text(
-          'login',
+          'Register',
           style: TextStyle(color: Colors.white),
         ),
       ),
       FlatButton(
-        onPressed: () {},
+        onPressed: () {
+          setState(() {
+            page = 'login';
+          });
+        },
         child: Text(
-          'create new account',
+          'Already have an account? Login',
           style: TextStyle(
               decoration: TextDecoration.underline, color: Hexcolor("#6ea0f0")),
         ),
