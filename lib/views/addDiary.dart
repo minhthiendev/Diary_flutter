@@ -1,5 +1,12 @@
+import 'package:Diary/services/userAuth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
 
 class AddDiary extends StatefulWidget {
   @override
@@ -7,19 +14,38 @@ class AddDiary extends StatefulWidget {
 }
 
 class _AddDiaryState extends State<AddDiary> {
-  DateTime selectedDate = DateTime.now();
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  String title;
+  String diaryId = uuid.v1();
+  String content;
+  String created = DateFormat('yyyy-MM-dd').format(DateTime.now()).toString();
+  String userId;
 
   _selectDate() {
     showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2025),
     ).then((value) {
-      setState() {
-        selectedDate = value;
-      }
+      this.created = DateFormat('yyyy-MM-dd').format(value).toString();
     });
+  }
+
+  void createDiary() {
+    this.diaryId = uuid.v1();
+    this.userId = context.read<UserAuth>().getUser().uid;
+
+    Map<String, dynamic> newDiary = {
+      'title': title,
+      'content': content,
+      'created': created,
+      'userId': userId,
+      'diaryId': diaryId,
+    };
+
+    _db.collection('diary').doc(diaryId).set(newDiary).whenComplete(() => null);
   }
 
   @override
@@ -27,26 +53,10 @@ class _AddDiaryState extends State<AddDiary> {
     return Scaffold(
         appBar: PreferredSize(
           child: AppBar(
-            leading: FlatButton(
-              child: Icon(
-                Icons.menu,
-                color: Colors.white,
-              ),
-              onPressed: () {},
-            ),
+            elevation: 0,
             title: Text('New Diary'),
             backgroundColor: Hexcolor("#11274a"),
-            actions: [
-              FlatButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.white,
-                  )),
-            ],
+            actions: [],
           ),
           preferredSize: Size.fromHeight(70.0),
         ),
@@ -60,6 +70,7 @@ class _AddDiaryState extends State<AddDiary> {
                   textCapitalization: TextCapitalization.words,
                   textAlign: TextAlign.center,
                   maxLines: null,
+                  onChanged: (value) => this.title = value,
                   textInputAction: TextInputAction.next,
                   onSubmitted: (_) => FocusScope.of(context).nextFocus(),
                   decoration: InputDecoration(
@@ -77,6 +88,7 @@ class _AddDiaryState extends State<AddDiary> {
                 margin: EdgeInsets.fromLTRB(10, 30, 10, 20),
                 child: Center(
                     child: TextField(
+                  onChanged: (value) => this.content = value,
                   textCapitalization: TextCapitalization.words,
                   textAlign: TextAlign.center,
                   maxLines: null,
@@ -97,25 +109,42 @@ class _AddDiaryState extends State<AddDiary> {
                 margin: EdgeInsets.fromLTRB(10, 30, 10, 20),
                 child: Center(
                     child: TextField(
+                  onChanged: (value) => this.created = value,
                   textCapitalization: TextCapitalization.words,
                   textAlign: TextAlign.center,
                   maxLines: null,
                   textInputAction: TextInputAction.done,
                   onSubmitted: (_) => FocusScope.of(context).unfocus(),
-                  onTap: _selectDate,
+                  controller: new TextEditingController(text: created),
                   decoration: InputDecoration(
-                      hintText: selectedDate.toString(),
                       border: new OutlineInputBorder(
-                          borderSide: new BorderSide(color: Colors.teal[600])),
+                          borderSide:
+                              new BorderSide(color: Hexcolor("#6ea0f0"))),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(4)),
                         borderSide: BorderSide(width: 1, color: Colors.blue),
                       ),
                       labelText: 'Date',
                       labelStyle: TextStyle(color: Colors.blue[600]),
-                      suffixIcon: Icon(Icons.edit)),
+                      suffixIcon: FlatButton(
+                          onPressed: _selectDate,
+                          child: Icon(Icons.arrow_drop_down))),
                 )),
               ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                RaisedButton(
+                  color: Hexcolor("#11274a"),
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(
+                        width: 1.2,
+                        color: Hexcolor("#6ea0f0"),
+                      )),
+                  onPressed: createDiary,
+                  child: Text('save'),
+                )
+              ])
             ],
           ),
         ));
