@@ -27,24 +27,36 @@ class _MenuState extends State<Menu> {
         padding: const EdgeInsets.all(8),
         children: <Widget>[
           Container(
-            height: 120,
+            height: 170,
             padding: EdgeInsets.all(20),
             color: Hexcolor("#11274a"),
             child: Center(
-                child: Container(
-              padding: EdgeInsets.all(30),
-              child: Text(
-                x.substring(0, 1).toUpperCase(),
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
+              child: Column(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(28),
+                    margin: EdgeInsets.only(bottom: 10),
+                    child: Text(
+                      x.substring(0, 1).toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Hexcolor("#6ea0f0"),
+                    ),
+                  ),
+                  Text(x,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold))
+                ],
               ),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Hexcolor("#6ea0f0"),
-              ),
-            )),
+            ),
           ),
           Container(
             decoration: BoxDecoration(
@@ -79,8 +91,10 @@ class _MenuState extends State<Menu> {
                     "Logout    ",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  onPressed: () {
-                    context.read<UserAuth>().signOut();
+                  onPressed: () async {
+                    return await context.read<UserAuth>().signOut();
+
+                    // Navigator.pushNamed(context, '/Login');
                   },
                 ),
                 Icon(Icons.logout)

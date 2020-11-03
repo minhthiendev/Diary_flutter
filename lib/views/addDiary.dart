@@ -33,6 +33,33 @@ class _AddDiaryState extends State<AddDiary> {
     });
   }
 
+  Future<Widget> showDialogz() async {
+    return await showDialog<Widget>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('anounment'),
+            content: Text(' this diary is added !'),
+            actions: [
+              FlatButton(
+                child: Text('Oke'),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(
+                    context,
+                    '/Home',
+                  );
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  void showMessage() {
+    showDialogz();
+  }
+
   void createDiary() {
     this.diaryId = uuid.v1();
     this.userId = context.read<UserAuth>().getUser().uid;
@@ -45,7 +72,11 @@ class _AddDiaryState extends State<AddDiary> {
       'diaryId': diaryId,
     };
 
-    _db.collection('diary').doc(diaryId).set(newDiary).whenComplete(() => null);
+    _db
+        .collection('diary')
+        .doc(diaryId)
+        .set(newDiary)
+        .whenComplete(() => showMessage());
   }
 
   @override

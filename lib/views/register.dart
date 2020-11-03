@@ -12,7 +12,50 @@ class _RegisterxState extends State<Registerx> {
   String _email;
   String _password;
   String _password2;
+  String message;
+  bool success;
   final _formKey = GlobalKey<FormState>();
+
+  Widget showMessage() {
+    if (message != null)
+      return Container(
+        width: double.infinity,
+        color: Hexcolor("#6ea0f0"),
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8),
+              child: Icon(
+                Icons.warning,
+                color: success ? Colors.green : Colors.red,
+              ),
+            ),
+            Expanded(
+              child: Text(message,
+                  style: TextStyle(
+                    color: success ? Colors.green : Colors.red[300],
+                    fontWeight: FontWeight.bold,
+                  )),
+            ),
+            FlatButton(
+                onPressed: () {
+                  setState(() {
+                    this.message = null;
+                    this.success = false;
+                  });
+                },
+                child: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ))
+          ],
+        ),
+        margin: EdgeInsets.only(top: 40),
+        padding: EdgeInsets.all(10),
+      );
+    return SizedBox(height: 0);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +68,7 @@ class _RegisterxState extends State<Registerx> {
             crossAxisAlignment: CrossAxisAlignment.center,
             verticalDirection: VerticalDirection.down,
             children: [
+              showMessage(),
               SizedBox(height: 40),
               logo(),
               TextFormField(
@@ -113,7 +157,21 @@ class _RegisterxState extends State<Registerx> {
                         )),
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        // context.read<UserAuth>().register(_email, _password);
+                        context
+                            .read<UserAuth>()
+                            .register(_email, _password)
+                            .then((value) {
+                          print(value);
+                          if (value == 'success')
+                            return setState(() {
+                              this.message =
+                                  'congratulations ! your account is created';
+                              this.success = true;
+                            });
+                          return setState(() {
+                            this.message = value;
+                          });
+                        });
                       }
                     },
                     child: Text(

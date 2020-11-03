@@ -20,6 +20,7 @@ class DiaryCard extends StatelessWidget {
             onTap: () {
               Navigator.pushNamed(context, '/DiaryDetail', arguments: {
                 'diaryId': this.diaryId,
+                'diaryTitle': this.title
               });
             },
             onLongPress: () {}),
